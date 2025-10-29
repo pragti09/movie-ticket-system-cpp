@@ -1,3 +1,50 @@
+// admin panel code 
+
+#include<string>
+#include<iostream>
+using namespace std;
+void adminpanel(string username){
+    int choice;
+    do{
+        cout<<"----Admin Panel-----"<<endl;
+        cout<<"Welcome"<<username<<"Admin"<<endl;
+        cout<<"1. Add Movie"<<endl;
+        cout<<"2. Update Movie"<<endl;
+        cout<<"3. Delete Movie"<<endl;
+        cout<<"4. View Movie"<<endl;
+        cout<<"5. View All Bookings"<<endl;
+        cout<<"6. Logout"<<endl;
+        cout<<"Enter your Choice"<<endl;
+        cin>>choice;
+        switch(choice){
+            case 1:
+            addmovie();
+            break;
+            case 2:
+            updatemovie();
+            break;
+            case 3:
+            Deletemovie();
+            break;
+            case 4:
+            viewmovie();
+            break;
+            case 5:
+            viewallbookings();
+            break;
+            case 6:
+            cout<<"logging out"<<endl;
+            break;
+            default:
+            cout<<"Invalid choice"<<endl;
+            break;
+        } 
+    } while(choice!=6);
+}
+
+// Delete movie code 
+
+
 #include<iostream>
 using namespace std;
 class movie{
