@@ -100,3 +100,59 @@ int main(){
     movie.show();
     return 
 }
+
+
+
+//<Add movies>
+
+#include<iostream>
+#include<string>
+using namespace std;
+
+struct Movie{
+       string title;
+       string genre;
+       string timings;
+       int duration;
+       float price;
+};
+
+Movie movies[10];  //global array to store movies
+int movieCount=0;
+void addMovie(){
+    if(movieCount<10){
+        cin.ignore();
+        cout<<"\nEnter movie title: ";
+    getline(cin,movies[movieCount].title);
+    cout<<"Enter genre: ";
+    getline(cin,movies[movieCount].genre);
+    cout<<"Enter Timings: ";
+    cin>>movies[movieCount].timings;
+    cout<<"Enter duration(in minutes): ";
+    cin>>movies[movieCount].duration;
+    cout<<"Enter ticket price: ";
+    cin>>movies[movieCount].price;
+    
+    movieCount++;
+    cout<<"\nMovie added successfully!\n";
+}
+else{
+    cout<<"Movie list is full!\n";
+}
+}
+
+void showMovies(){
+    if(movieCount==0){
+        cout<<"\nNo movies available.\n";
+        return;
+    }
+    cout<<"\nList of Movies :\n";
+    for(int i=0;i<movieCount;i++){
+        cout<<"Movie "<<i+1<<endl;
+        cout<<"Title: "<<movies[i].title<<endl;
+        cout<<"Timings: "<<movies[i].timings<<endl;
+        cout<<"Genre: "<<movies[i].genre<<endl;
+        cout<<"Duration: "<<movies[i].duration<<" minutes"<<endl;
+        cout<<"Price: Rs."<<movies[i].price<<endl;
+    }
+}
