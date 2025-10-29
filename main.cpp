@@ -5,8 +5,8 @@
 using namespace std;
 bool loginuser(string & username, string & role);
 void registerUser();
-void adminpanel();
-void userpanel();
+void adminpanel(string username);
+void userpanel(string username);
 int main(){
     int choice;
     string username, role;
