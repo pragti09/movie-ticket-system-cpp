@@ -83,3 +83,47 @@ class booking{
      }
 
 };
+
+
+
+// view movie booking details
+
+#include<iostream>
+#include<string>
+using namespace std;
+struct movie{
+    int bookingId;
+    string customerName;
+    string movieName;
+    string showTime;
+    int seatNumber;
+    float ticketPrice;
+};
+int main(){
+    movie booking1;
+    cout<<"enter booking Id:";
+    cin>>booking1.bookingId;
+    cout<<"enter customer name:";
+    cin>>booking1.customerName;
+    cout<<"enter movie name:";
+    cin>>booking1.movieName;
+    cout<<"enter show time:";
+    cin>>booking1.showTime;
+    cout<<"enter seat number:";
+    cin>>booking1.seatNumber;
+    cout<<"enter ticket price:";
+    cin>>booking1.ticketPrice;
+    
+    cout<<"\nMovie booking details\n";
+    cout<<"booking Id:"<<booking1.bookingId<<endl;
+    cout<<"customer name:"<<booking1.customerName<<endl;
+    cout<<"movie name:"<<booking1.movieName<<endl;
+    cout<<"show time:"<<booking1.showTime<<endl;
+    cout<<"seat number:"<<booking1.seatNumber<<endl;
+    cout<<"ticket price:"<<booking1.ticketPrice<<endl;
+
+
+    return 0;
+}
+
+
