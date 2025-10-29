@@ -37,3 +37,49 @@ void cancelTicket(){
         cout<<"\nNo matching ticket.\n";
     }
 }
+
+//print ticket
+
+
+#include<iostream>
+#include<fstream>
+#include<sstream>
+#include<string>
+using namespace std;
+
+class booking{
+    public:
+    static void printTicket(const string & username){
+        ifstream file("booking.txt");
+        string line;
+        bool found = false;
+        while(getline(file,line)){
+            stringstream ss(line);
+            string booking_id, user_id, uname, movie, seats, amount;
+            getline(ss, booking_id, '|');
+            getline(ss,user_id,'|' );
+            getline(ss,uname,'|' );
+            getline(ss,movie,'|' );
+            getline(ss,seats,'|' );
+            getline(ss,amount,'|');
+
+            if(uname == username){
+                found=true;
+                cout<<"-----TICKET-----"<<endl;
+                cout<<"---------------------"<<endl;
+                cout<<"Booking Id:- "<<booking_id<<endl;
+                cout<<"User Id:- "<<user_id<<endl;
+                cout<<"Name:- "<<uname<<endl;
+                cout<<"Movie:- "<<movie<<endl;
+                cout<<"Seat Number:- "<<seats<<endl;
+                cout<<"Amount Paid:- "<<amount<<endl;
+            }
+        }
+        if(!found){
+            cout<<"No tickets found!"<<endl;
+
+        }
+        file.close();
+     }
+
+};
