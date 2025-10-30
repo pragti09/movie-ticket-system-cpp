@@ -156,3 +156,6 @@ void showMovies(){
         cout<<"Price: Rs."<<movies[i].price<<endl;
     }
 }
+
+
+
