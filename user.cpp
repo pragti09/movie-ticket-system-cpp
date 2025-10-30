@@ -1,3 +1,34 @@
+//View Available Movies 
+
+#include<iostream>
+#include<fstream>
+#include<sstream>
+using namespace std;
+void viewMovies(){
+    ifstream file("movies.txt");
+    if (!file. is_open()){
+        cout<<"Unable to open the file!"<<endl;
+        return;
+    }
+    string line;
+    cout<<"--------------AVAILABLE MOVIES-----------------------"<<endl;
+    cout<<"ID \t TITLE \t TIME \t SEATS \t PRICE \t"<<endl;
+    cout<<"----------------------------------------------------"<<endl;
+    while(getline(file, line)){
+        stringstream ss(line);
+        string id, title, time, seats, price;
+        getline(ss, id, '|');
+        getline(ss, title, '|');
+        getline(ss, time, '|');
+        getline(ss, seats, '|');
+        getline(ss, price, '|');
+        cout<<id<<"\t"<<title<<"\t"<<time<<"\t"<<seats<<"\t"<<price<<endl;
+    }
+    file.close();
+
+}
+
+// Cancel Ticket
 #include<iostream>
 #include<string>
 using namespace std;
