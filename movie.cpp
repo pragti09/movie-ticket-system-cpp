@@ -221,3 +221,40 @@ int main(){
 
 }
 
+
+
+//View all bookings
+
+#include<iostream>
+#include<fstream>
+#include<sstream>
+using namespace std;
+
+void viewAllBookings(){
+    ifstream file("bookings.txt");
+    if(!file){
+        cout<<"Error: Could not open bookings.txt\n";
+        return;
+    }
+
+string line;
+cout<<"\n==== All Bookings =====\n";
+cout<<"BookingID | UserID | Username | MovieTitle | Seats | Amount\n";
+cout<<"--------------------------------------------------------------------------\n";
+
+
+while(getline(file,line)){
+    stringstream ss(line);
+    string bookingId,userId,username,movieTitle,seats,amount;
+
+    getline(ss,bookingId,'|');
+    getline(ss,userId,'|');
+    getline(ss,username,'|');
+    getline(ss,movieTitle,'|');
+    getline(ss,seats,'|');
+    getline(ss,amount,'|');
+
+    cout<<bookingId<<"|"<<userId<<"|"<<username<<"|"<<movieTitle<<"|"<<seats<<"|"<<"Rs."<<amount<<"\n";
+}
+file.close();
+}
