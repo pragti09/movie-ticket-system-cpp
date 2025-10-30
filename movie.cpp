@@ -159,3 +159,65 @@ void showMovies(){
 
 
 
+// update movie
+
+
+#include<iostream>
+#include<string>
+using namespace std;
+class movie {
+public:
+      int id;
+      string name;
+      string time;
+      float price;
+       
+      void display(){
+        cout<<"ID:" <<id<<"| NAME:" <<name<<"| TIME:" <<time<<"| PRICE:" <<price<< endl;
+      }
+};
+
+    void updatemovie (movie movies[] ,int size ){
+      int searchID;
+      cout<< "\n enter movieID to update:";
+      cin >> searchID;
+      if(!(cin>> searchID)){
+        cout<< "invalid ID";
+      }
+    
+    bool found=false;
+    for (int i=0;i<size;i++){
+      if(movies[i].id ==searchID){
+        found=true;
+        cout<< "\n new movie details";
+        cout<<  " enter name:";
+        cin>> movies[i].name;
+        cout<< "enter time:";
+        cin>> movies[i].time;
+        cout<< "enter price:";
+        cin>> movies[i].price;
+        cout<<"\n movie updated";
+        break;
+        return;
+
+      }
+    }
+  
+  if(!found){
+    cout<<"movie not found";
+  }
+}
+int main(){
+  movie movies[2]={
+    {1,"avtar","4pm", 449.0},
+    {2,"joker","8pm", 499.0}
+  };
+  updatemovie(movies,2);
+  cout<<"\n updated movie;\n";
+  for(int i=0;i<2;i++){
+    movies[i].display();
+  }
+  return 0;
+
+}
+

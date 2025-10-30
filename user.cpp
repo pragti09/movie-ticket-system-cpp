@@ -1,3 +1,34 @@
+//View Available Movies 
+
+#include<iostream>
+#include<fstream>
+#include<sstream>
+using namespace std;
+void viewMovies(){
+    ifstream file("movies.txt");
+    if (!file. is_open()){
+        cout<<"Unable to open the file!"<<endl;
+        return;
+    }
+    string line;
+    cout<<"--------------AVAILABLE MOVIES-----------------------"<<endl;
+    cout<<"ID \t TITLE \t TIME \t SEATS \t PRICE \t"<<endl;
+    cout<<"----------------------------------------------------"<<endl;
+    while(getline(file, line)){
+        stringstream ss(line);
+        string id, title, time, seats, price;
+        getline(ss, id, '|');
+        getline(ss, title, '|');
+        getline(ss, time, '|');
+        getline(ss, seats, '|');
+        getline(ss, price, '|');
+        cout<<id<<"\t"<<title<<"\t"<<time<<"\t"<<seats<<"\t"<<price<<endl;
+    }
+    file.close();
+
+}
+
+// Cancel Ticket
 #include<iostream>
 #include<string>
 using namespace std;
@@ -83,3 +114,47 @@ class booking{
      }
 
 };
+
+
+
+// view movie booking details
+
+#include<iostream>
+#include<string>
+using namespace std;
+struct movie{
+    int bookingId;
+    string customerName;
+    string movieName;
+    string showTime;
+    int seatNumber;
+    float ticketPrice;
+};
+int main(){
+    movie booking1;
+    cout<<"enter booking Id:";
+    cin>>booking1.bookingId;
+    cout<<"enter customer name:";
+    cin>>booking1.customerName;
+    cout<<"enter movie name:";
+    cin>>booking1.movieName;
+    cout<<"enter show time:";
+    cin>>booking1.showTime;
+    cout<<"enter seat number:";
+    cin>>booking1.seatNumber;
+    cout<<"enter ticket price:";
+    cin>>booking1.ticketPrice;
+    
+    cout<<"\nMovie booking details\n";
+    cout<<"booking Id:"<<booking1.bookingId<<endl;
+    cout<<"customer name:"<<booking1.customerName<<endl;
+    cout<<"movie name:"<<booking1.movieName<<endl;
+    cout<<"show time:"<<booking1.showTime<<endl;
+    cout<<"seat number:"<<booking1.seatNumber<<endl;
+    cout<<"ticket price:"<<booking1.ticketPrice<<endl;
+
+
+    return 0;
+}
+
+
