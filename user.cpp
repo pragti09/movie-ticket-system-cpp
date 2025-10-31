@@ -158,3 +158,31 @@ int main(){
 }
 
 
+//logout code
+
+#include<iostream>
+#include<string>
+using namespace std;
+int main(){
+    string users[2]={"user","admin"};
+    bool loggedin[2]={true,true};
+    int choice;
+    cout<<"======logout page======"<<endl;
+    cout<<"1. logout user"<<endl;
+    cout<<"2. logout admin"<<endl;
+    cout<<"enter your choice:";
+    cin>>choice;
+     
+    if (choice==1) {
+        loggedin[0]=false;
+        cout<<users[0]<<"logged out successfully"<<endl;
+    } 
+    else if(choice==2){
+        loggedin[1]=false;
+        cout<<users[1]<<"logged out successfully"<<endl;
+    }                               
+    else{
+        cout<<"invalid choice"<<endl;
+    }
+    return 0;
+}
