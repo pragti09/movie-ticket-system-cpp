@@ -1,11 +1,98 @@
-//View Available Movies 
-
 #include<iostream>
+#include"booking.h"
 #include<fstream>
 #include<sstream>
+#include<string>
+#include<limits>
+#include<vector>
+#include"user.h"
+#include"utility.h"
 using namespace std;
+//Register As new user 
+void User::registerUser() {
+    string newUsername, newPassword;
+    cout<<"\n--- New User Registration ---"<<endl;
+    cin.ignore();
+    cout<<"Enter Username: "<<endl;
+    getline(cin, newUsername);
+    cout<<"Enter newPassword"<<endl;
+    getline(cin, newPassword);
+
+    int newId = getNextId("user.txt");
+
+    ofstream file("user.txt", ios::app);
+
+    if(!file.is_open()) {
+        cout<<"Error: Could not open file for registering."<<endl;
+        return;
+    }
+
+    file<<newId<<"|"<<newUsername<<"|"<<newPassword<<"|User"<<endl;
+    file.close();
+
+    cout<<"\nRegisteration successful! Your UserId is "<<newId<<endl;
+
+}
+
+
+
+
+void viewMovies();
+void bookTicket(int userId, const string& username);
+void viewMyBookings();
+void cancelTicket();
+void printTicket(string username);
+void logout();
+void userpanel(int userId, const string& username){
+    int choice;
+    do {
+        cout<<"\n===== User Panel (" << username << ") =====" <<endl;
+        cout<< "1. View Available Movies " <<endl;
+        cout << "2. Book Ticket" << endl;
+        cout << "3. View My Bookings" <<endl;
+        cout << "4. Cancel Ticket" << endl;
+        cout << "5. Print Ticket" << endl;
+        cout << "6. Logout" << endl;
+        cout << "Enter your choice: ";
+        if(!(cin>>choice)) {
+            cout<<"Invalid input. Please enter a number."<<endl;
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            choice = 0;
+            continue;     
+        }
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        switch(choice) {
+            case 1:
+                viewMovies();
+                break;
+            case 2:
+                bookTicket(userId, username);
+                break;
+            case 3:
+                viewMyBookings();
+                break;
+            case 4:
+                cancelTicket();
+                break;
+            case 5:
+                printTicket(username);
+                break;
+            case 6:
+                cout<<"\nLogging out of User Panel. Returning to Main Menu."<<endl;
+                logout();
+                break;
+            default:
+                cout<<"Invalid choice. Please try again (1-6)."<<endl;
+        
+        }
+    }
+    while (choice != 6);
+}
+
+//View Available Movies 
 void viewMovies(){
-    ifstream file("movies.txt");
+    ifstream file("movie.txt");
     if (!file. is_open()){
         cout<<"Unable to open the file!"<<endl;
         return;
@@ -29,9 +116,7 @@ void viewMovies(){
 }
 
 // Cancel Ticket
-#include<iostream>
-#include<string>
-using namespace std;
+
 struct Ticket{
     string movieName;
     string userName;
@@ -41,46 +126,63 @@ struct Ticket{
 
 Ticket tickets[20];
 int ticketCount=0;
-
-void cancelTicket(){
-    if(ticketCount==0){
-        cout<<"\nNo tickets booked yet. \n";
+void cancelTicket() {
+    ifstream fin("booking.txt");
+    if (!fin) {
+        cout << "\nError: booking.txt not found.\n";
         return;
     }
 
-    string name;
-    int seat;
+    vector<string> lines;
+    string line;
+    bool found = false;
+
+    string name, movie;
     cin.ignore();
-    cout<<"\nEnter your name: ";
-    getline(cin,name);
-    cout<<"Enter your seat number: ";
-    cin>>seat;
-    bool found=false;
-    for(int i=0;i<ticketCount;i++){
-        if(tickets[i].userName==name && tickets[i].seatNumber==seat && tickets[i].isBooked){
-            tickets[i].isBooked=false;
-            cout<<"\nTicket cancelled successfully!\n";
-            found=true;
-            break;
+    cout << "\nEnter your name: ";
+    getline(cin, name);
+    cout << "Enter movie name: ";
+    getline(cin, movie);
+
+    // Read file line-by-line
+    while (getline(fin, line)) {
+        if (line.empty()) continue;
+
+        stringstream ss(line);
+        string bookingId, userId, username, moviename, seats, amount;
+
+        getline(ss, bookingId, '|');
+        getline(ss, userId, '|');
+        getline(ss, username, '|');
+        getline(ss, moviename, '|');
+        getline(ss, seats, '|');
+        getline(ss, amount, '|');
+
+        // Check match
+        if (username == name && moviename == movie) {
+            found = true;
+            continue; // DO NOT add this line back -> DELETED
         }
-    }   
-    if(!found){
-        cout<<"\nNo matching ticket.\n";
+
+        lines.push_back(line); // keep other bookings
     }
+    fin.close();
+
+    if (!found) {
+        cout << "\nNo booking found for given name + movie.\n";
+        return;
+    }
+
+    // Rewrite updated file
+    ofstream fout("booking.txt");
+    for (string &l : lines)
+        fout << l << "\n";
+    fout.close();
+
+    cout << "\nTicket cancelled successfully!\n";
 }
-
 //print ticket
-
-
-#include<iostream>
-#include<fstream>
-#include<sstream>
-#include<string>
-using namespace std;
-
-class booking{
-    public:
-    static void printTicket(const string & username){
+void printTicket(string username){
         ifstream file("booking.txt");
         string line;
         bool found = false;
@@ -112,16 +214,7 @@ class booking{
         }
         file.close();
      }
-
-};
-
-
-
-// view movie booking details
-
-#include<iostream>
-#include<string>
-using namespace std;
+//View My Bookings 
 struct movie{
     int bookingId;
     string customerName;
@@ -130,40 +223,65 @@ struct movie{
     int seatNumber;
     float ticketPrice;
 };
-int main(){
-    movie booking1;
-    cout<<"enter booking Id:";
-    cin>>booking1.bookingId;
-    cout<<"enter customer name:";
-    cin>>booking1.customerName;
-    cout<<"enter movie name:";
-    cin>>booking1.movieName;
-    cout<<"enter show time:";
-    cin>>booking1.showTime;
-    cout<<"enter seat number:";
-    cin>>booking1.seatNumber;
-    cout<<"enter ticket price:";
-    cin>>booking1.ticketPrice;
-    
-    cout<<"\nMovie booking details\n";
-    cout<<"booking Id:"<<booking1.bookingId<<endl;
-    cout<<"customer name:"<<booking1.customerName<<endl;
-    cout<<"movie name:"<<booking1.movieName<<endl;
-    cout<<"show time:"<<booking1.showTime<<endl;
-    cout<<"seat number:"<<booking1.seatNumber<<endl;
-    cout<<"ticket price:"<<booking1.ticketPrice<<endl;
+void viewMyBookings(){
+    vector<movie> bookings;
+    ifstream file("booking.txt");
+    string line;
+    while (getline(file, line)) {
+        stringstream ss(line);
+        string part;
+        movie m;
 
+        getline(ss, part, '|'); m.bookingId = stoi(part);
+        getline(ss, part, '|');
+        getline(ss, part, '|'); m.customerName = part;
+        getline(ss, part, '|'); m.movieName = part;
+        getline(ss, part, '|'); m.seatNumber = stoi(part);
+        getline(ss, part, '|'); m.ticketPrice = stof(part);
+        bookings.push_back(m);
+    }
+    file.close();
+    int choice;
+    cout<<"view your booking details\n";
+    cout<<"1. search by booking id\n";
+    cout<<"2. search by customer name\n";
+    cin>> choice;
 
-    return 0;
+    int searchId;
+    string searchName;
+    bool found =false;
+    if(choice==1){
+        cout<<"enter your booking id:";
+        cin>>searchId;
+    }
+    else{
+        cout<<"enter your name:";
+        cin>>searchName;
+    } 
+    cout<< "\n===your booing details===\n";
+    for (const movie& m: bookings){
+        if((choice==1 && m.bookingId==searchId)||
+         (choice==2 && m.customerName==searchName))
+        {
+            found=true;
+            
+            cout<<"booking Id:"<<m.bookingId<<endl;
+            cout<<"Name:"<<m.customerName<<endl;
+            cout<<"Movie:"<<m.movieName<<endl;
+            cout<<"show time:"<<m.showTime<<endl;
+            cout<<"seat number:"<<m.seatNumber<<endl;
+            cout<<"Price:"<<m.ticketPrice<<endl;
+        }
+    }
+    if(!found){
+        cout<<" no booking found.\n";
+    }
 }
 
 
-//logout code
 
-#include<iostream>
-#include<string>
-using namespace std;
-int main(){
+//logout code
+void logout(){
     string users[2]={"user","admin"};
     bool loggedin[2]={true,true};
     int choice;
@@ -184,5 +302,4 @@ int main(){
     else{
         cout<<"invalid choice"<<endl;
     }
-    return 0;
 }
