@@ -3,76 +3,132 @@
 #include<string>
 #include <fstream>
 #include "movie.h"
+#include "utility.h"
 #include <sstream>
-using namespace std;
-void Movie::display() const {
-     cout<<"ID: "<<id;
-        cout<<" | Name: "<<title;
-        cout<<" | Time: "<<time;
-        cout<<" |Seats: "<<availableSeats;
-        cout<<" | Price: "<<price<<endl;
+
+std::vector<Movie> loadAllMovies_M() {
+    std::vector<Movie> movies;
+    std::ifstream file("movie.txt");
+    std::string line;
+
+    while (getline(file, line)) {
+        std::stringstream ss(line);
+        std::string idStr, title, time, seatsStr, priceStr;
+
+        if (getline(ss, idStr, '|') && getline(ss, title, '|') &&
+            getline(ss, time, '|') && getline(ss, seatsStr, '|') &&
+            getline(ss, priceStr, '|')) 
+        {
+           
+            Movie m;
+            m.id = std::stoi(idStr);
+            m.title = title;
+            m.time = time;
+            m.availableSeats = stoi(seatsStr);
+            m.price = std::stof(priceStr);
+            movies.push_back(m);
+        }
+    }
+    file.close();
+    return movies;
 }
-//Add Movie
-void addMovie(vector<Movie>&movies){
-    Movie m;
-    cout<<" \nEnter Movie ID: ";
-    cin>>m.id;
-    cin.ignore(); //clears input buffer
+
+void rewriteMoviesFile(const std::vector<Movie>& movies) {
+    std::ofstream file("movie.txt"); 
+    for (const auto& m : movies) {
+        file << m.id << "|" << m.title << "|" << m.time << "|"
+             << m.availableSeats << "|" << m.price << std::endl; 
+    }
+    file.close();
+}
+
+void Movie::display() const {
+    std::cout<<"ID: "<<id;
+    std::cout<<" | Name: "<<title;
+    std::cout<<" | Time: "<<time;
+    std::cout<<" |Seats: "<<availableSeats;
+    std::cout<<" | Price: "<<price<<std::endl;
+}
+
+void viewMovies(){
+    std::ifstream file("movie.txt");
     
-    cout<<"Enter Movie Name: ";
-    getline(cin, m.title);
+    std::string line;
+    std::cout << "\n--- Current Movies and Showtimes ---" << std::endl;
+    std::cout << "ID | Title | Time | Seats | Price" << std::endl;
+    std::cout << "---|-------|------|-------|-------" << std::endl;
 
-    cout<<"Enter Movie Time: ";
-    getline(cin, m.time);
+    bool found=false;
 
-    cout<<"Enter Number of seats of available : ";
-    cin>>m.availableSeats;
+    while(getline(file, line)){
+        std::stringstream ss(line);
+        std::string id, title, time, seats, price;
+        getline(ss, id, '|');
+        getline(ss, title, '|');
+        getline(ss, time, '|');
+        getline(ss, seats, '|');
+        getline(ss, price, '|');
+        std::cout<<id<<" | "<<title<<" | "<<time<<" | "<<seats<<" | "<<price<<std::endl;
+        found = true;
+    }
+    file.close();
+    if (!found) {
+        std::cout << "No movies currently scheduled." << std::endl;
+    }
 
-    cout<<"Enter Ticket Price: ";
-    cin>>m.price;
+}
+
+
+void Movie::addMovie(){ 
+    std::cout << "\n--- Add New Movie ---" << std::endl;
+
+    std::cout<<"Enter Movie Name: ";
+    getline(std::cin, title);
+
+    std::cout<<"Enter Movie Time: ";
+    getline(std::cin, time);
+
+    std::cout<<"Enter Total seats: ";
+    std::cin>>availableSeats;
+
+    std::cout<<"Enter Ticket Price: ";
+    std::cin>>price;
     
-    movies.push_back(m);
-    cout<<"\n Movie added successfully!\n";
-     ofstream outFile("movie.txt", ios::app);
+    std::cin.ignore(); 
+     
+    id = getNextId("movie.txt");
+    
+    
+    std::ofstream outFile("movie.txt", std::ios::app);
     if(outFile.is_open()){
-        outFile<<m.id<<"|";
-        outFile<<m.title<<"|";
-        outFile<<m.time<<"|";
-        outFile<<m.availableSeats<<"|";
-        outFile<<m.price<<"|"<<endl;
-     outFile.close();
-     cout<<"\nMovie added successfully and saved to file!\n";
-    }else{
-        cout<<"\nError: Could not open movie.txt file!\n ";
+        outFile<<id<<"|";
+        outFile<<title<<"|";
+        outFile<<time<<"|";
+        outFile<<availableSeats<<"|";
+        outFile<<price<<"|"<<std::endl;
+
+        outFile.close();
+        std::cout<<"\nMovie added successfully!\n";
+    } else {
+        std::cout<<"\nError: Could not open movie.txt file!\n ";
     }
 
 }                                           
 
-//View Movies
-void viewMovies(const vector<Movie>&movies){
-    if(movies.empty()){
-        cout<<"\nNo movies available.\n";
-        return;
-    }
-    cout<<"\nList of Movies: \n";
-    for(const Movie &m : movies){
-        m.display();
-    }
-}
-//Update Movie
-void updatemovie() {
-    vector<Movie> movies;
 
-    ifstream fin("movie.txt");
+void Movie:: updateMovie() {
+    std::vector<Movie> movies;
+
+    std::ifstream fin("movie.txt");
     if (!fin.is_open()) {
-        cout << "Error opening movie.txt" << endl;
+        std::cout << "Error opening movie.txt" << std::endl;
         return;
     }
 
-    string line;
+    std::string line;
     while (getline(fin, line)) {
-        stringstream ss(line);
-        string part;
+        std::stringstream ss(line);
+        std::string part;
         Movie m;
 
         getline(ss, part, '|'); m.id = stoi(part);
@@ -86,92 +142,81 @@ void updatemovie() {
     fin.close();
 
     if (movies.empty()) {
-        cout << "No movies available." << endl;
+        std::cout << "No movies available." << std::endl;
         return;
     }
-
+    viewMovies();
     int searchId;
-    cout << "Enter movie ID to update: ";
-    cin >> searchId;
+    std::cout << "Enter movie ID to update: ";
+    std::cin >> searchId;
 
     bool found = false;
     for (Movie& m : movies) {
         if (m.id == searchId) {
             found = true;
-            cout << "\nNew movie details:\n";
+            std::cout << "\nNew movie details:\n";
 
-            cin.ignore(); // flush newline
-            cout << "Enter name: ";
-            getline(cin, m.title);
+            std::cin.ignore(); 
+            std::cout << "Enter name: ";
+            getline(std::cin, m.title);
 
-            cout << "Enter time: ";
-            getline(cin, m.time);
+            std::cout << "Enter time: ";
+            getline(std::cin, m.time);
 
-            cout << "Enter available seats: ";
-            cin >> m.availableSeats;
+            std::cout << "Enter available seats: ";
+            if(!(std::cin >> m.availableSeats)) {
+                std::cout<<"Invalid number of seats entered."<<std::endl;
+                std::cin.clear();
+                std::cin.ignore();
+            };
 
-            cout << "Enter price: ";
-            cin >> m.price;
+            std::cout << "Enter price: ";
+            if(!(std::cin >> m.price)) {
+                std::cout<<"Invalid price entered."<<std::endl;
+                std::cin.clear();
+                std::cin.ignore();
+            };
 
-            cout << "\nMovie updated.\n";
+            std::cout << "\nMovie updated.\n";
             break;
         }
     }
 
     if (!found) {
-        cout << "Movie not found." << endl;
+        std::cout << "Movie not found." << std::endl;
         return;
     }
 
-    ofstream fout("movie.txt");
+    std::ofstream fout("movie.txt");
     if (!fout.is_open()) {
-        cout << "Error writing to movie.txt" << endl;
+        std::cout << "Error writing to movie.txt" << std::endl;
         return;
     }
 
     for (const Movie& m : movies) {
         fout << m.id << "|" << m.title << "|" << m.time << "|"
-             << m.availableSeats << "|" << m.price << endl;
+             << m.availableSeats << "|" << m.price << std::endl;
     }
     fout.close();
 }
-//Delete Movie 
 
-vector<Movie> loadMoviesFromFile(const string& filename) {
-    vector<Movie> movies;
-    ifstream file("movie.txt");
-    string line;
 
-    while (getline(file, line)) {
-        stringstream ss(line);
-        string part;
-        Movie m;
 
-        getline(ss, part, '|'); m.id = stoi(part);
-        getline(ss, part, '|'); m.title = part;
-        getline(ss, part, '|'); m.time = part;
-        getline(ss, part, '|'); m.availableSeats = stoi(part);
-        getline(ss, part, '|'); m.price = stof(part);
 
-        movies.push_back(m);
-    }
-
-    file.close();
-    return movies;
-}
-void deleteMovie(vector<Movie>& movies, const string& filename) {
-    movies = loadMoviesFromFile("movie.txt");
+void Movie::deleteMovie(std::vector<Movie>& movies, const std::string& filename) {
+    movies = loadAllMovies_M();
+    std::cout << "\n--- ADMIN: Delete Movie ---" << std::endl;
     if (movies.empty()) {
-        cout << "No movies available to delete." << endl;
+        std::cout << "No movies available to delete." << std::endl;
         return;
     }
-
+    viewMovies();
     int deleteId;
-    cout << "Enter Movie ID to delete: ";
-    cin >> deleteId;
+    std::cout << "Enter Movie ID to delete: ";
+    std::cin >> deleteId;
 
     bool found = false;
-    vector<Movie> updatedMovies;
+    std::vector<Movie> updatedMovies;
 
     for (const Movie& m : movies) {
         if (m.id != deleteId) {
@@ -182,49 +227,20 @@ void deleteMovie(vector<Movie>& movies, const string& filename) {
     }
 
     if (found) {
-        // Save updated list to file
-        ofstream file("movie.txt");
+       
+        std::ofstream file("movie.txt");
         for (const Movie& m : updatedMovies) {
             file << m.id << "|" << m.title << "|" << m.time << "|"
                  << m.availableSeats << "|" << m.price << "\n";
         }
         file.close();
 
-        // Update the original vector
         movies = updatedMovies;
 
-        cout << "Movie deleted successfully!" << endl;
+        std::cout << "Movie deleted successfully!" << std::endl;
     } else {
-        cout << "Movie ID not found." <<endl;
+        std::cout << "Movie ID not found." <<std::endl;
     }
 }
 
-//View All Bookings 
-void viewAllBookings(){
-    ifstream file("booking.txt");
-    if(!file){
-        cout<<"Error: Could not open bookings.txt\n";
-        return;
-    }
 
-string line;
-cout<<"\n==== All Bookings =====\n";
-cout<<"BookingID | UserID | Username | MovieTitle | Seats | Amount\n";
-cout<<"--------------------------------------------------------------------------\n";
-
-
-while(getline(file,line)){
-    stringstream ss(line);
-    string bookingId,userId,username,movieName,seats,amount;
-
-    getline(ss,bookingId,'|');
-    getline(ss,userId,'|');
-    getline(ss,username,'|');
-    getline(ss,movieName,'|');
-    getline(ss,seats,'|');
-    getline(ss,amount,'|');
-
-    cout<<bookingId<<"|"<<userId<<"|"<<username<<"|"<<movieName<<"|"<<seats<<"|"<<"Rs."<<amount<<"\n";
-}
-file.close();
-}

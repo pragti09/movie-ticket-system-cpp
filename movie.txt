@@ -1,3 +1,5 @@
-101|Interworld|4:00 pm|46|250
-102|Penthouse|6:00 pm|39|200
-103|Inception |10:00 am|50|200
+1|Interstellar|10:00 AM|50|250
+2|Barbie|1:30 PM|45|220
+3|Oppenhemer|4:45 PM|157|280
+4|Dune: Part Two|7:00 PM|28|260
+5|Home Alone|9:30 PM|55|180

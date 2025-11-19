@@ -12,14 +12,17 @@ public:
     float price;      
     int availableSeats;
    
+    Movie(): id(0), availableSeats(0), price(0.0f){}
+
+    void addMovie();
+    void updateMovie();
+    void deleteMovie(std::vector<Movie>& movies, const std:: string& filename);
+
     void display() const; 
 };
 
 
-void addMovie(std::vector<Movie>&movies);
-void viewMovies(const std::vector<Movie>&movies);
-void updatemovie();
-void deleteMovie(std::vector<Movie>& movies, const std:: string& filename);
-void viewAllBookings();
+void viewMovies(); 
+
 
 #endif

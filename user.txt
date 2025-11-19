@@ -1,3 +1,11 @@
-001|Kiran|123|Admin
-002|Anmol|234|User
-3|Pragti|141|User
+1|Pragti Aggarwal|Pragti@123|Admin
+2|Damanpreet Kaur|Daman@123|Admin
+3|Kiranjot Kaur|Kiran@123|Admin
+4|Anmol Kaur|Anmol@123|Admin
+5|Pragti|Pragti@1234|User
+6|Damanpreet|Daman@1234|User
+7|Kiranjot|Kiran@1234|User
+8|Anmol|Anmol@1234|User
+9|Admin|123|Admin
+10|New User|456|User
+11|Shrey|1234|User
