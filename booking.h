@@ -16,4 +16,8 @@ class Booking {
 };
 
 void bookTicket(int userId, const std::string& username);
+void viewMyBookings(int userId);
+void cancelTicket(int userId, const std::string& username);
+void printTicket(int userId, const std::string& username);
+void viewAllBookings();
 #endif
